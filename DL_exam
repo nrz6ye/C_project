@@ -1,0 +1,195 @@
+//Ellie Kim 
+//Lab #4
+//Ch. 8 #15, p. 597. 
+//Write a program that grades 20 multiple choice questions 
+//the written portion of a driver's license exam.  
+//Oct. 19th. 2018
+
+/*Create a TestGrader class that includes an answers array of 20 characters which holds the correct test answers. 
+The class will have two public member functions that enable user programs to interact with the class: setKey and grade. 
+The setKey function receives a 20-character string holding the correct answers and copies this information into its answers array. 
+Hint: can use string copy method to copy a string to a character array
+The grade function receives a 20-character string holding the test taker's answers and compares each of their answers to the correct ones. 
+After grading the exam the function should display a message indicating whether the applicant passed or failed the exam. 
+15 or more correct answers are required to pass. 
+The function should then display the total number of correctly answered questions, the total number of incorrectly answered questions, 
+and a list of the question numbers for all incorrectly answered questions. 
+The client program that creates and uses a TestGrader object should first make a single call to setKey, 
+passing it a string containing the 20 correct answers. 
+After the above step, the client program should allow a test taker's 20 answers to be entered, 
+store them in a 20-character array (or string), and then call the grade function to grade the exam. 
+The program should loop to allow additional tests to be entered and graded until the user indicates a desire to stop. 
+Input validation: Only accept the letters A, B, C, and D for test answers.*/
+
+
+
+#include <iostream>
+#include <iomanip>
+#include <string.h>
+#include <cctype>
+using namespace std;
+
+const unsigned SIZE = 20;
+
+/*********************************
+
+TestGrader class has two public member functions that 
+enale user programs to interact with the class:
+setKey and grade
+
+*********************************/
+
+class TestGrader
+{
+	private:
+		char answer[SIZE];
+		void missedQuestions(char []);
+		int getNumWrong (char []);
+
+	public:
+		void setKey(char []);
+		void grade(char []);
+		
+};
+/*********************************
+TestGrader::setKey
+********************************/
+void TestGrader::setKey(char correctKey[])
+{
+
+	
+	if ( strlen(correctKey) != SIZE ) 
+	{
+		cout << "Error in key data. \n";
+		return;
+	}
+	for (int x = 0; x < SIZE; x++)
+	{
+		answer[x] = correctKey[x];
+	}
+}
+
+/********************************
+Test Grader::grade
+**********************************/
+
+void TestGrader::grade(char test[])
+{
+	int numWrong = getNumWrong(test);
+	if (numWrong <= 5)
+		cout << "Congratulations. You passed the exam.\n";
+	else
+		cout << "Sorry. You did not pass the exam.\n";
+	cout << "You got "<< (SIZE-numWrong) << " questions correct. \n";
+
+	if (numWrong > 0)
+	{
+		cout << "You missed the following " << numWrong << " questions: ";
+		missedQuestions(test);
+	}
+		
+}
+
+/****************************************8
+TestGrader::getNumberWrong
+*****************************************/
+
+int TestGrader::getNumWrong(char test[])
+{
+	int numCorrect = 0;
+	int numWrong = 0;
+	int count = 0;
+
+	for (int x = 0; x < 20; x++)
+	{
+		if (test[x] == answer[x])
+		{
+			numCorrect = numCorrect + 1;
+			count = count + 1;
+		}
+		else 
+		{
+			numWrong += 1;
+		}
+	}
+
+	return numWrong;
+
+
+}
+
+/***************************************************
+TestGrader::Missed Questions
+Compares student answers to correct answers
+***************************************************/
+void TestGrader::missedQuestions (char test[])
+{
+	cout << "The numbers of questions you answered wrong: \n";
+	for (int x = 0; x < SIZE; x++)
+	{
+		if (test[x] != answer[x])
+		{
+			cout << x + 1 << "  ";
+		}
+	}
+}
+
+
+
+int main()
+{
+	const int Num_QUESTIONS = 20;
+	string name; //Test taker's name
+	char doAnother; // Control variable for main  processing Loop
+	char testTakerAnswers[20]; //Arrary a hold test taker's answers
+	TestGrader DMVexam; //Create a TestGrader object
+	
+	DMVexam.setKey("BDAACABACDBCDADCCBDA");
+	
+	do 
+	{
+	
+		//Get applicant name (not required by the program specs)
+		cout << "\nApplicant name: ";
+		getline(cin, name);
+		
+		//Get and validate applicant answers
+		cout << "Enter answers for " << name << ".\n\n";
+		cout << "Use Only letters A, B, C, and D.\n";
+		
+		
+		for (int x = 0; x < 20; x++)
+		{
+			cout << "Q" << x + 1 << ": ";
+			
+			cin >> testTakerAnswers[x];
+			testTakerAnswers[x] = toupper(testTakerAnswers[x]); // change to uppercase letters
+
+
+			while ((testTakerAnswers[x] != 'A') && (testTakerAnswers[x] !='B') &&(testTakerAnswers[x] !='C') && (testTakerAnswers[x] !='D'))
+			{
+				cout << "Please enter A, B, C, or D only\n\n: ";
+				cin >> testTakerAnswers[x];
+				testTakerAnswers[x] = toupper(testTakerAnswers[x]);
+			}
+		}
+		
+		cout << "Results for "<< name << ".\n";
+		//Call class function to grade the exam
+		DMVexam.grade(testTakerAnswers);
+		
+		//Ask if grade another exam
+
+		cout << "\nGrade another exam (Y/N)? ";
+		cin >> doAnother;
+		cout << endl;
+		cin.ignore();  //clear the /n out of the input buffer before doing the next getline.
+		
+		
+	} while (toupper(doAnother) == 'Y');
+	
+
+
+	return 0;
+}
+
