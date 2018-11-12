@@ -1,0 +1,86 @@
+//Ellie Kim
+
+//It calculates the highest slaes from each days the user input.
+//dynamically allocate an array large enough to hold that many days of sales amount & get the sales figures for each day using Pointers
+//calculate the highest sales using pointers
+//using the STL sort function to sort the sales array 
+
+
+#include <iostream>
+#include <iomanip>
+#include <algorithm> // for STL sort 
+using namespace std;
+
+// Function prototypes
+double Highest(const double *, int);
+void show(double sales[], int NUM_DAYS);
+
+//main function
+int main()
+{
+	const int NUM_DAYS = 5; // number of days
+	double * sales =nullptr, //dynamically allocated memory
+			highest;  // Holds the highest daily sales
+	
+	sales = new double [NUM_DAYS]; // Holds the daily sales amounts
+
+	double *p = sales; // points to the sales value
+
+
+	// Get the sales data
+	cout << "Enter the sales for this week.\n";
+
+	for (int day = 0; day < NUM_DAYS; day++)
+	{	cout << "Day " << (day+1) <<": ";
+		cin  >> *p;
+		if (*p <0) // validate input sale entries are greater than zero
+			{cout << "enter positive numbers: ";
+			cin >> *p;}
+		p++; // pointer incrementing 
+	}
+	
+	cout << "\nBefore sorted ";
+	show(sales, NUM_DAYS); // calling out the show function to display original array 
+	
+
+	sort(sales, sales+NUM_DAYS); // STL sort function to sort the sales array
+	
+	cout << "\nAfter sorted"; // calling out the show function to display sorted array ascending order 
+	show(sales, NUM_DAYS); 
+
+
+
+
+	p = sales;
+	// Get highest and lowest sales amounts
+	highest = Highest(sales, NUM_DAYS);
+
+
+	// Display results
+   cout << fixed << showpoint << setprecision(2) << endl;
+
+   cout << "The highest sales amount is $"
+	     << setw(9) << highest << endl;
+	
+	delete [] sales; // pair with nullptr earlier in the code (free the dynamically allocated memory)
+	sales = nullptr;
+	return 0;
+}
+
+void show(double sales [], int NUM_DAYS) // void function for showing the array using for loop
+
+{	cout << "\nsales entries: ";
+	for (int i =0; i<NUM_DAYS; ++i) //  
+		cout << "\n" << sales[i];
+}
+
+double Highest(const double *array, int size) // Highest()function that returns highest
+{
+	double highest = *array;  //point to the array 
+
+	for (int count = 1; count < size; count++)
+	{	if (*(array+count) > highest)
+			highest = *(array+count);
+	}
+	return highest;
+}
